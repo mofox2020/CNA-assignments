@@ -30,7 +30,8 @@ except:
 try:
   # Bind the the server socket to a host and port
   # ~~~~ INSERT CODE ~~~~
-  serverSocket.bind(proxyHost,proxyPort)
+  # Update1: the input of bing should be a tuple
+  serverSocket.bind((proxyHost,proxyPort))
   # ~~~~ END CODE INSERT ~~~~
   print ('Port is bound')
 except:
@@ -40,7 +41,8 @@ except:
 try:
   # Listen on the server socket
   # ~~~~ INSERT CODE ~~~~
-  serverSocket.listen(1)
+  # Update 2:allow 3 connections queing
+  serverSocket.listen(3)
   # ~~~~ END CODE INSERT ~~~~
   print ('Listening to socket')
 except:
@@ -118,7 +120,8 @@ while True:
     # ProxyServer finds a cache hit
     # Send back response to client 
     # ~~~~ INSERT CODE ~~~~
-    clientSocket.send(cacheData)
+    # Update3:use sendall() to send binary data
+    clientSocket.sendall(cacheData)
 
     # ~~~~ END CODE INSERT ~~~~
     cacheFile.close()
@@ -156,7 +159,7 @@ while True:
 
       # Construct the request to send to the origin server
       request = originServerRequest + '\r\n' + originServerRequestHeader + '\r\n\r\n'
-
+      originServerSocket.sendall(request.encode())
       # Request the web resource from origin server
       print ('Forwarding request to origin server:')
       for line in request.split('\r\n'):
@@ -172,12 +175,18 @@ while True:
 
       # Get the response from the origin server
       # ~~~~ INSERT CODE ~~~~
-      response = originServerSocket.recv(BUFFER_SIZE)
+      response = b''
+      while True:
+        data = originServerSocket.recv(BUFFER_SIZE)
+        if not data:
+          break
+        response += data
       # ~~~~ END CODE INSERT ~~~~
 
       # Send the response to the client
       # ~~~~ INSERT CODE ~~~~
-      clientSocket.send(response)
+      # Update4: use sendall() to send respond
+      clientSocket.sendall(response)
       # ~~~~ END CODE INSERT ~~~~
 
       # Create a new file in the cache for the requested file.
