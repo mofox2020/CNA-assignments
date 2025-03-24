@@ -31,7 +31,7 @@ except:
 try:
   # Bind the server socket to a host and port
   # ~~~~ INSERT CODE ~~~~
-  # Update 1: the input of bing should be a tuple
+  # Update1: the input of bind should be a tuple
   serverSocket.bind((proxyHost, proxyPort))
   # Bind requires a tuple (host, port)
   # ~~~~ END CODE INSERT ~~~~
@@ -116,8 +116,8 @@ while True:
     print ('Cache hit! Loading from cache file: ' + cacheLocation)
     # ProxyServer finds a cache hit, send back response to client
     # ~~~~ INSERT CODE ~~~~
-     # Update 3:use sendall() to send binary data
-    clientSocket.sendall(cacheData)  # Use sendall to send binary data
+    # Update 3: Use sendall to send data
+    clientSocket.sendall(cacheData)  
     # ~~~~ END CODE INSERT ~~~~
     cacheFile.close()
     print ('Sent to the client:')
@@ -126,6 +126,7 @@ while True:
     originServerSocket = None
     # Create a socket to connect to origin server
     # ~~~~ INSERT CODE ~~~~
+    # Update 4: Use socket.socket to call socket function
     originServerSocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     # Create socket object correctly
     # ~~~~ END CODE INSERT ~~~~
@@ -166,6 +167,7 @@ while True:
 
       # Get the response from the origin server
       # ~~~~ INSERT CODE ~~~~
+      # Update 5: Use while loop to receive data from originserver until no more data is sent
       response = b''
       while True:
         data = originServerSocket.recv(BUFFER_SIZE)
@@ -177,7 +179,6 @@ while True:
 
       # Send the response to the client
       # ~~~~ INSERT CODE ~~~~
-      #Update 4: use sendall() to send respond
       clientSocket.sendall(response)
       # Use sendall to ensure complete data transfer
       # ~~~~ END CODE INSERT ~~~~
